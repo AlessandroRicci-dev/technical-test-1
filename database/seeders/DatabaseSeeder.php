@@ -4,11 +4,18 @@ namespace Database\Seeders;
 
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Order;
+use App\Models\Product;
+use App\Models\OrderItem;
+use Illuminate\Support\Arr;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
+
+    private object $products;
+
     /**
      * Seed the application's database.
      */
@@ -21,6 +28,17 @@ class DatabaseSeeder extends Seeder
             'password' => Hash::make('password')
         ]);
 
-        User::factory(10)->create();
+        $this->products = Product::factory(50)->create();
+
+        User::factory(10)->create()->each(function ($user) {
+            Order::factory(5)->create([
+                "user_id" => $user->id
+            ])->each(function ($order) {
+                OrderItem::factory(3)->create([
+                    'order_id' => $order->id,
+                    'product_id' => $this->products->random()->id,
+                ]);
+            });
+        });
     }
 }
