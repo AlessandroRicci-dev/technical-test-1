@@ -1,0 +1,61 @@
+services:
+    app:
+        build:
+            context: './'
+            dockerfile: ./docker/app/Dockerfile
+        container_name: app
+        image: app:1.0
+        ports:
+            - '8000:8000'
+        volumes:
+            - '.:/var/www/html'
+            - './docker/php:/usr/local/etc/php/'
+        networks:
+            - mynetwork
+        depends_on:
+            - db
+            - redis
+
+    db:
+        image: mariadb:11.4
+        environment:
+            MARIADB_ROOT_PASSWORD: rootpassword
+            MARIADB_USER: user
+            MARIADB_PASSWORD: password
+            MARIADB_DATABASE: project-be-orders
+        ports:
+            - "3306:3306"
+        volumes:
+            - data.mariadb:/var/lib/mysql
+            - ./docker/db/db-init.sql:/docker-entrypoint-initdb.d/db-init.sql
+        networks:
+            - mynetwork
+
+    meilisearch:
+        image: getmeili/meilisearch:v1.12
+        volumes:
+            - data.meilisearch:/data.meilisearch
+        ports:
+            - "7700:7700"
+        networks:
+            - mynetwork
+
+    redis:
+        image: redis:7.2.4
+        ports:
+            - "6379:6379"
+        environment:
+            REDIS_PORT: 6379
+            ALLOW_EMPTY_PASSWORD: "yes"
+        networks:
+            - mynetwork
+
+networks:
+    mynetwork:
+
+
+volumes:
+    data.mariadb:
+    data.meilisearch:
+
+
