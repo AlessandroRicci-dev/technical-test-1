@@ -28,7 +28,6 @@ class OrderController extends Controller
      */
     public function index(Request $request): JsonResponse
     {
-
         $orders = $this->orderService->list($request);
         return response()->json($orders);
     }
@@ -56,7 +55,6 @@ class OrderController extends Controller
      */
     public function update(OrderStoreRequest $request, string $id): JsonResponse
     {
-
         $order = $this->orderService->update($request->validated(), $id);
         return response()->json($order);
     }

@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class OrderItem extends Model
 {
     use HasFactory;
+
     /**
      * The attributes that are mass assignable.
      *
@@ -27,10 +28,9 @@ class OrderItem extends Model
     protected $hidden = [];
 
     /**
-     * Relations
+     * The relations with other models
      *
      */
-
     public function order()
     {
         return $this->belongsTo(Order::class);

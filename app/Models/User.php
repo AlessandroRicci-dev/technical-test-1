@@ -48,10 +48,9 @@ class User extends Authenticatable
     }
 
     /**
-     * Relations
+     * The relations with other models
      *
      */
-
     public function orders()
     {
         return $this->hasMany(Order::class);
