@@ -11,6 +11,8 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class AuthenticationTest extends TestCase
 {
+
+
     public function test_auth_with_valid_credentials(): void
     {
         $user = User::factory()->create([
