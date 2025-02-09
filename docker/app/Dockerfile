@@ -35,5 +35,5 @@ RUN composer install --optimize-autoloader --no-dev
 
 EXPOSE 8000
 
-CMD ["docker-start.sh"]
+#CMD ["docker-start.sh"]
 
