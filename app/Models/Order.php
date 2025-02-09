@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\OrderItem;
 
 class Order extends Model
 {
@@ -15,8 +16,10 @@ class Order extends Model
      * @var list<string>
      */
     protected $fillable = [
+        'user_id',
+        'name',
+        'description',
         'status',
-        'total_price',
     ];
 
     /**
@@ -41,5 +44,17 @@ class Order extends Model
     public function orderItems()
     {
         return $this->hasMany(OrderItem::class);
+    }
+
+    public function products()
+    {
+        return $this->hasManyThrough(
+            Product::class,
+            OrderItem::class,
+            'order_id',
+            'id',
+            'id',
+            'product_id'
+        );
     }
 }

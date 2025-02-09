@@ -23,7 +23,6 @@ class OrderFactory extends Factory
             'status' => $this->faker->randomElement(['COMPLETED']),
             'name' => $this->faker->sentence(10),
             'description' => $this->faker->sentence(300),
-            'total_price' => $this->faker->randomFloat(2, 10, 500),
             'created_at' => now(),
             'updated_at' => now(),
         ];

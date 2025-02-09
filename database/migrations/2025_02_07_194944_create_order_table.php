@@ -17,7 +17,6 @@ return new class extends Migration
             $table->string("name");
             $table->text("description");
             $table->enum("status", ['DRAFT', 'PAID', 'SHIPPED', 'COMPLETED'])->default("DRAFT");
-            $table->decimal('total_price', 10, 2);
             $table->timestamps();
             $table->softDeletes();
         });

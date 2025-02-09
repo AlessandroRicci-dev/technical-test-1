@@ -7,7 +7,6 @@ use App\Models\User;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\OrderItem;
-use Illuminate\Support\Arr;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
@@ -23,9 +22,17 @@ class DatabaseSeeder extends Seeder
     {
 
         User::factory()->create([
+            'name' => 'Test Admin',
+            'email' => "admin@test.com",
+            'password' => Hash::make('password'),
+            'role' => 'ADMIN'
+        ]);
+
+        User::factory()->create([
             'name' => 'Test User',
-            'email' => "test@test.com",
-            'password' => Hash::make('password')
+            'email' => "user@test.com",
+            'password' => Hash::make('password'),
+            'role' => 'USER'
         ]);
 
         $this->products = Product::factory(50)->create();
