@@ -1,7 +1,12 @@
 FROM php:8.3-fpm
 
-COPY ./docker/app/docker-start.sh /usr/local/bin/docker-start.sh
-RUN chmod 755 /usr/local/bin/docker-start.sh
+COPY ./docker/app/docker-start-commons.sh /usr/local/bin/docker-start-commons.sh
+COPY ./docker/app/docker-start-dev.sh /usr/local/bin/docker-start-dev.sh
+COPY ./docker/app/docker-start-test.sh /usr/local/bin/docker-start-test.sh
+
+RUN chmod 755 /usr/local/bin/docker-start-commons.sh
+RUN chmod 755 /usr/local/bin/docker-start-dev.sh
+RUN chmod 755 /usr/local/bin/docker-start-test.sh
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     libcurl4-openssl-dev \
@@ -35,5 +40,5 @@ RUN composer install --optimize-autoloader --no-dev
 
 EXPOSE 8000
 
-#CMD ["docker-start.sh"]
+CMD ["docker-start-commons.sh"]
 

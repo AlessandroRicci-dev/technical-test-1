@@ -47,7 +47,7 @@ class OrderController extends Controller
      */
     public function show(OrderShowRequest $request, string $id): JsonResponse
     {
-        $order = $this->orderService->getOrder($id);
+        $order = $this->orderService->getOrder($request->validated()['id']);
         return response()->json($order);
     }
 
@@ -66,7 +66,7 @@ class OrderController extends Controller
      */
     public function destroy(OrderDeleteRequest $request, string $id): JsonResponse
     {
-        $this->orderService->deleteOrder($id);
+        $this->orderService->deleteOrder($request->validated()['id']);
         return response()->json(["status" => "deleted"]);
     }
 }

@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\OrderItem;
+use Illuminate\Support\Arr;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
@@ -35,15 +36,15 @@ class DatabaseSeeder extends Seeder
             'role' => 'USER'
         ]);
 
-        $this->products = Product::factory(50)->create();
+        $products = Product::factory(50)->create();
 
-        User::factory(10)->create()->each(function ($user) {
+        User::factory(10)->create()->each(function ($user) use ($products) {
             Order::factory(5)->create([
                 "user_id" => $user->id
-            ])->each(function ($order) {
+            ])->each(function ($order) use ($products) {
                 OrderItem::factory(3)->create([
                     'order_id' => $order->id,
-                    'product_id' => $this->products->random()->id,
+                    'product_id' => $products->random()->id,
                 ]);
             });
         });
