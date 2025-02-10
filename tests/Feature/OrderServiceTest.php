@@ -99,7 +99,6 @@ class OrderServiceTest extends TestCase
         assertEquals("Testing creation of orders", $newOrder->description);
     }
 
-
     public function test_user_can_update_an_order()
     {
 
@@ -135,7 +134,6 @@ class OrderServiceTest extends TestCase
         assertEquals("Testing updating of orders", $updatedOrder->description);
     }
 
-
     public function test_user_can_delete_an_order()
     {
 
@@ -153,11 +151,9 @@ class OrderServiceTest extends TestCase
             'Authorization' => 'Bearer ' . $user->createToken('TestToken')->plainTextToken,
         ]);
 
-
         $response->assertStatus(200);
         $this->assertSoftDeleted('orders', ['id' => $order->id]);
     }
-
 
     public function test_handles_concurrent_orders_with_different_users()
     {
@@ -188,7 +184,6 @@ class OrderServiceTest extends TestCase
             }
             return $requests;
         });
-
 
         $responseStatuses = array_map(function ($response) {
             return  $response->status();
