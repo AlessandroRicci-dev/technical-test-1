@@ -1,17 +1,16 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\api\V1;
 
-use App\Http\Requests\OrderDeleteRequest;
-use App\Models\Order;
+
 use Illuminate\Http\Request;
-use App\Http\Services\OrderService;
-use Illuminate\Support\Facades\Log;
-use App\Http\Requests\OrderShowRequest;
-use App\Http\Requests\OrderIndexRequest;
-use App\Http\Requests\OrderStoreRequest;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Response;
+use App\Http\Services\OrderService;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\OrderShowRequest;
+use App\Http\Requests\OrderStoreRequest;
+use App\Http\Requests\OrderDeleteRequest;
+use App\Http\Requests\OrderIndexRequest;
 
 class OrderController extends Controller
 {
@@ -26,9 +25,9 @@ class OrderController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request): JsonResponse
+    public function index(OrderIndexRequest $request): JsonResponse
     {
-        $orders = $this->orderService->list($request);
+        $orders = $this->orderService->list($request->validated());
         return response()->json($orders);
     }
 

@@ -20,6 +20,7 @@ use function PHPUnit\Framework\assertNotEmpty;
 class OrderServiceTest extends TestCase
 {
 
+    private string $apiVersion = 'V1';
 
     public function test_admin_views_all_orders()
     {
@@ -27,7 +28,7 @@ class OrderServiceTest extends TestCase
             'role' => 'ADMIN'
         ]);
 
-        $response = $this->getJson('/api/order', [
+        $response = $this->getJson("/api/$this->apiVersion/order?query=''", [
             'Accept' => 'application/json',
             'Authorization' => 'Bearer ' . $user->createToken('TestToken')->plainTextToken,
         ]);
@@ -51,7 +52,7 @@ class OrderServiceTest extends TestCase
             'role' => 'USER'
         ]);
 
-        $response = $this->getJson('/api/order', [
+        $response = $this->getJson("/api/$this->apiVersion/order?query=''", [
             'Accept' => 'application/json',
             'Authorization' => 'Bearer ' . $user->createToken('TestToken')->plainTextToken,
         ]);
@@ -85,7 +86,7 @@ class OrderServiceTest extends TestCase
             ]
         ];
 
-        $response = $this->postJson('/api/order', $requestData, [
+        $response = $this->postJson("/api/$this->apiVersion/order", $requestData, [
             'Accept' => 'application/json',
             'Authorization' => 'Bearer ' . $user->createToken('TestToken')->plainTextToken,
         ]);
@@ -121,7 +122,7 @@ class OrderServiceTest extends TestCase
             ]
         ];
 
-        $response = $this->patchJson('/api/order/1', $requestData, [
+        $response = $this->patchJson("/api/$this->apiVersion/order/1", $requestData, [
             'Accept' => 'application/json',
             'Authorization' => 'Bearer ' . $user->createToken('TestToken')->plainTextToken,
         ]);
@@ -146,7 +147,7 @@ class OrderServiceTest extends TestCase
             'description' => 'Order to be deleted'
         ]);
 
-        $response = $this->deleteJson('/api/order/' . $order->id, [], [
+        $response = $this->deleteJson("/api/$this->apiVersion/order/" . $order->id, [], [
             'Accept' => 'application/json',
             'Authorization' => 'Bearer ' . $user->createToken('TestToken')->plainTextToken,
         ]);
@@ -180,7 +181,7 @@ class OrderServiceTest extends TestCase
                 $requests['user_' . $user->id] = $pool->withHeaders([
                     'Accept' => 'application/json',
                     'Authorization' => 'Bearer ' . $user->createToken('TestToken')->plainTextToken,
-                ])->post(config("app.url") . '/api/order', array_merge($requestData, ['user_id' => $user->id]));
+                ])->post(config("app.url") . "/api/$this->apiVersion/order", array_merge($requestData, ['user_id' => $user->id]));
             }
             return $requests;
         });
