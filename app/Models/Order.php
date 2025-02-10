@@ -2,14 +2,17 @@
 
 namespace App\Models;
 
+use App\Models\OrderItem;
+use Laravel\Scout\Searchable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use App\Models\OrderItem;
+use Illuminate\Database\Eloquent\Builder;
 
 class Order extends Model
 {
-    use SoftDeletes, HasFactory;
+    use SoftDeletes, HasFactory, Searchable;
+
     /**
      * The attributes that are mass assignable.
      *
@@ -29,13 +32,10 @@ class Order extends Model
      */
     protected $hidden = [];
 
-
     /**
-     * The attributes that should be hidden for serialization.
+     * The relations with other models
      *
-     * @var list<string>
      */
-
     public function user()
     {
         return $this->belongsTo(User::class);
@@ -56,5 +56,24 @@ class Order extends Model
             'id',
             'product_id'
         );
+    }
+
+    /**
+     * Some Mailisearch customizations to allow search in fields
+     *
+     */
+    protected function makeAllSearchableUsing(Builder $query): Builder
+    {
+        return $query->with('products');
+    }
+
+    public function toSearchableArray()
+    {
+        return [
+            'user_id' => $this->user_id,
+            'name' => $this->name,
+            'description' => $this->description,
+            'created_at' => $this->created_at
+        ];
     }
 }

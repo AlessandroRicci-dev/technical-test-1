@@ -7,7 +7,7 @@ use App\Models\Product;
 use App\Models\OrderItem;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class OrderService
 {
@@ -15,15 +15,20 @@ class OrderService
      * List orders with pagination.
      * If the logged-in user is a "USER", only orders belonging to that user are returned.
      *
+     * this is a search via meilisearch
+     * 
      * @param Request $request
      * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
      */
-    public function list(Request $request)
+    public function list(Request $request): LengthAwarePaginator
     {
-        $orders = Order::with('products')
-            ->when($request->user()->role === "USER", function ($query) use ($request) {
-                $query->where('user_id', $request->user()->id);
+        $searchTerm = $request->input('query', '');
+
+        $orders = Order::search($searchTerm)
+            ->when($request->user()->role === "USER", function ($builder) use ($request) {
+                return $builder->where('user_id', $request->user()->id);
             })
+            ->orderBy("created_at", "desc")
             ->paginate(20);
 
         return $orders;
@@ -35,21 +40,21 @@ class OrderService
      * @param array $orderDTO Array containing order details and products.
      * @return Order
      */
-    public function createNewOrder(array $orderDTO)
+    public function createNewOrder(array $request): Order
     {
         DB::beginTransaction();
 
         try {
             // Create the order with provided details.
             $order = Order::create([
-                'user_id'     => $orderDTO["user_id"],
-                'name'        => $orderDTO["name"],
-                'description' => $orderDTO["description"],
-                'status'      => $orderDTO["status"],
+                'user_id' => $request["user_id"],
+                'name' => $request["name"],
+                'description' => $request["description"],
+                'status' => $request["status"],
             ]);
 
             // For each product in the request, update the stock and create the associated OrderItem.
-            foreach ($orderDTO['products'] as $orderProduct) {
+            foreach ($request['products'] as $orderProduct) {
                 // Lock the product record for update to avoid race conditions.
                 $product = Product::lockForUpdate()->findOrFail($orderProduct['id']);
 
@@ -81,7 +86,7 @@ class OrderService
      * @param int $id The order ID.
      * @return Order
      */
-    public function update(array $request, int $id)
+    public function update(array $request, int $id): Order
     {
         DB::beginTransaction();
 
@@ -102,16 +107,17 @@ class OrderService
             // 5. Update the stock of the products, ensuring that stock does not drop below 0.
             $this->updateStock($existingItems, $toDelete, $toInsert, $toUpdate, $requestProducts);
 
+            // 5. Finally update the Order 
             $order->update([
-                'name'        => $request["name"] ?? $order->name,
+                'name' => $request["name"] ?? $order->name,
                 'description' => $request["description"] ?? $order->description,
-                'status'      => $request["status"] ?? $order->status,
+                'status' => $request["status"] ?? $order->status,
             ]);
 
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
-            throw $e;
+            abort(400, $e->getMessage());
         }
 
         return $order;
@@ -123,11 +129,10 @@ class OrderService
      * @param string $id The order ID.
      * @return Order|null
      */
-    public function getOrder(string $id)
+    public function getOrder(string $id): Order
     {
         return Order::with('products')->where("id", $id)->first();
     }
-
 
     /**
      * Delete an order and restore the stock of its associated products.
@@ -135,7 +140,7 @@ class OrderService
      * @param string $id The order ID.
      * @return \Illuminate\Http\JsonResponse
      */
-    public function deleteOrder(string $id)
+    public function deleteOrder(string $id): bool
     {
         DB::beginTransaction();
 
@@ -155,10 +160,10 @@ class OrderService
             $order->delete();
 
             DB::commit();
-            return response()->json(['message' => 'Order deleted successfully'], 200);
+            return true;
         } catch (\Exception $e) {
             DB::rollBack();
-            return response()->json(['error' => $e->getMessage()], 400);
+            abort(400, $e->getMessage());
         }
     }
 
@@ -172,7 +177,7 @@ class OrderService
      * @param int $quantity The quantity to adjust by.
      * @param bool $decrease Whether to decrease (true) or increase (false) the stock.
      */
-    private function adjustProductStock(Product $product, int $quantity, bool $decrease = true)
+    private function adjustProductStock(Product $product, int $quantity, bool $decrease = true): void
     {
         if ($decrease) {
             if ($product->stock_quantity < $quantity) {
@@ -216,7 +221,7 @@ class OrderService
         $toUpdate = collect();
         foreach ($commonIds as $productId) {
             $existingQty = $existingItems[$productId]->quantity;
-            $newQty      = $requestProducts[$productId]['qty'];
+            $newQty = $requestProducts[$productId]['qty'];
             if ($existingQty != $newQty) {
                 $toUpdate->put($productId, ['old' => $existingQty, 'new' => $newQty]);
             }
@@ -234,7 +239,7 @@ class OrderService
      * @param \Illuminate\Support\Collection $toUpdate OrderItems to update.
      * @param \Illuminate\Support\Collection $requestProducts Request products indexed by id.
      */
-    private function updateOrderItems($order, $toDelete, $toInsert, $toUpdate, $requestProducts)
+    private function updateOrderItems($order, $toDelete, $toInsert, $toUpdate, $requestProducts): void
     {
         // Delete OrderItems that are not present in the request.
         if ($toDelete->isNotEmpty()) {
@@ -268,7 +273,7 @@ class OrderService
      * @param \Illuminate\Support\Collection $toUpdate OrderItems to update.
      * @param \Illuminate\Support\Collection $requestProducts Request products indexed by id.
      */
-    private function updateStock($existingItems, $toDelete, $toInsert, $toUpdate, $requestProducts)
+    private function updateStock($existingItems, $toDelete, $toInsert, $toUpdate, $requestProducts): void
     {
         // a. For each deletion: increment the product's stock.
         $toDelete->each(function ($productId) use ($existingItems) {
