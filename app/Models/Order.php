@@ -30,7 +30,7 @@ class Order extends Model
      *
      * @var list<string>
      */
-    protected $hidden = [];
+    protected $hidden = ['user_id'];
 
     /**
      * The relations with other models

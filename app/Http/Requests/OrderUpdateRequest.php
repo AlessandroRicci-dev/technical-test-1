@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Order;
 use Illuminate\Foundation\Http\FormRequest;
 
 class OrderStoreRequest extends FormRequest
@@ -11,9 +12,12 @@ class OrderStoreRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        if ($this->user()->role === "USER") {
+        $order = Order::where("id", $this->route('id'))->firstOrFail();
+
+        if ($this->user()->role === "USER" && $order->user_id === $this->user()->id) {
             return true;
         };
+
         return false;
     }
 
@@ -25,7 +29,6 @@ class OrderStoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'user_id' => 'required|exists:users,id',
             'name' => 'required|string',
             'description' => 'required|string',
             'status' => 'required|in:DRAFT,PAID,SHIPPED,COMPLETED',

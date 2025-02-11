@@ -5,8 +5,10 @@ namespace App\Http\Services;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\OrderItem;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 class OrderService
@@ -20,15 +22,21 @@ class OrderService
      * @param Request $request
      * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
      */
-    public function list(Request $request): LengthAwarePaginator
+    public function list(array $request): LengthAwarePaginator
     {
-        $searchTerm = $request->input('query', '');
 
-        $orders = Order::search($searchTerm)
-            ->when($request->user()->role === "USER", function ($builder) use ($request) {
-                return $builder->where('user_id', $request->user()->id);
+        $orders = Order::search($request["query"] ?? '')
+            ->when(Auth::user()->role === "USER", function ($builder) {
+                $builder->where('user_id', Auth::user()->id);
             })
-            ->orderBy("created_at", "desc")
+            ->query(function ($query) use ($request) {
+                if (isset($request["fromDate"])) {
+                    $query->where('created_at', '>=', Carbon::parse($request["fromDate"]));
+                    $query->where('created_at', '<=', Carbon::parse($request["toDate"]));
+                }
+            })
+
+            ->orderBy('created_at', 'DESC')
             ->paginate(20);
 
         return $orders;
@@ -37,7 +45,7 @@ class OrderService
     /**
      * Create a new order and update the product stock accordingly.
      *
-     * @param array $orderDTO Array containing order details and products.
+     * @param array $request Array containing order details and products.
      * @return Order
      */
     public function createNewOrder(array $request): Order
@@ -47,7 +55,7 @@ class OrderService
         try {
             // Create the order with provided details.
             $order = Order::create([
-                'user_id' => $request["user_id"],
+                'user_id' => Auth::user()->id,
                 'name' => $request["name"],
                 'description' => $request["description"],
                 'status' => $request["status"],

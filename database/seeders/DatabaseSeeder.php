@@ -6,6 +6,7 @@ use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use App\Models\Order;
 use App\Models\Product;
+use Meilisearch\Client;
 use App\Models\OrderItem;
 use Illuminate\Support\Arr;
 use Illuminate\Database\Seeder;
@@ -48,5 +49,12 @@ class DatabaseSeeder extends Seeder
                 ]);
             });
         });
+
+        ///update configuration for meilisearch
+
+        $client = new Client(config('scout.meilisearch.host'));
+        $index = $client->index('orders');
+        $index->updateFilterableAttributes(['user_id', 'name', 'description', 'created_at']);
+        $index->updateSortableAttributes(['user_id', 'name', 'description', 'created_at']);
     }
 }
