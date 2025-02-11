@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "e8ea7b4f-b121-4b40-8de1-59f701487ba2",
+		"_postman_id": "e2932681-13af-4439-b844-007c23b59f40",
 		"name": "Api-discovery",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "5017477"
@@ -8,78 +8,392 @@
 	"item": [
 		{
 			"name": "Auth",
-			"event": [
+			"item": [
 				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"var response = pm.response.json();\r",
-							"pm.collectionVariables.set(\"token\", response.token);"
-						],
-						"type": "text/javascript",
-						"packages": {}
-					}
-				}
-			],
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Accept",
-						"value": "application/json",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n   \"email\" : \"ricci.ghost.ale@gmail.com\",\r\n \r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
+					"name": "Auth",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var response = pm.response.json();\r",
+									"pm.collectionVariables.set(\"token\", response.token);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
 						}
-					}
-				},
-				"url": {
-					"raw": "{{baseUrl}}/api/auth",
-					"host": [
-						"{{baseUrl}}"
 					],
-					"path": [
-						"api",
-						"auth"
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n   \"email\" : \"user@test.com\",\r\n   \"password\" : \"password\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/auth",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"auth"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "localhost:8000/api/auth",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n   \"email\" : \"test@test.com\",\r\n   \"password\" : \"password\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/auth",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"auth"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Host",
+									"value": "localhost:8000"
+								},
+								{
+									"key": "Connection",
+									"value": "close"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "PHP/8.3.10"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, private"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 08 Feb 2025 06:49:24 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"token\": \"1|sOAKs0n4ty4ZpotIiZHlRJPdUSBQdsNkzbwFjHrwd5793ef7\"\n}"
+						}
 					]
 				}
-			},
-			"response": []
+			]
 		},
 		{
-			"name": "User",
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "{token}",
-							"type": "string"
+			"name": "Order",
+			"item": [
+				{
+					"name": "Order List",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/V1/order?query=''&fromDate=2025-01-01&toDate=2026-03-05",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"V1",
+								"order"
+							],
+							"query": [
+								{
+									"key": "query",
+									"value": "''"
+								},
+								{
+									"key": "fromDate",
+									"value": "2025-01-01"
+								},
+								{
+									"key": "toDate",
+									"value": "2026-03-05"
+								}
+							]
 						}
-					]
+					},
+					"response": []
 				},
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "localhost:8000/api/user",
-					"host": [
-						"localhost"
-					],
-					"port": "8000",
-					"path": [
-						"api",
-						"user"
-					]
+				{
+					"name": "Order",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/V1/order/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"V1",
+								"order",
+								"1"
+							],
+							"query": [
+								{
+									"key": "acc",
+									"value": null,
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Order Update",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "",
+								"value": "",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\r\n    \"name\": \"Lorem ipsum dolor sit\",\r\n    \"description\": \"Lorem ipsum dolor sit error\",\r\n    \"status\": \"COMPLETED\",\r\n    \"products\": [\r\n        {\r\n            \"id\": 1,\r\n            \"qty\": 5\r\n        },\r\n        {\r\n            \"id\": 2,\r\n            \"qty\": 3\r\n        }  \r\n           \r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/V1/order/51",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"V1",
+								"order",
+								"51"
+							],
+							"query": [
+								{
+									"key": "acc",
+									"value": null,
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Order Delete",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "",
+								"value": "",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/V1/order/51",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"V1",
+								"order",
+								"51"
+							],
+							"query": [
+								{
+									"key": "acc",
+									"value": null,
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Order",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\r\n    \"name\": \"Lorem ipsum dolor sit\",\r\n    \"description\": \"Lorem ipsum dolor sit\",\r\n    \"status\": \"COMPLETED\",\r\n    \"products\": [\r\n        {\r\n            \"id\": 1,\r\n            \"qty\": 5\r\n        },\r\n        {\r\n            \"id\": 2,\r\n            \"qty\":4\r\n        }  \r\n           \r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/V1/order",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"V1",
+								"order"
+							]
+						}
+					},
+					"response": []
 				}
-			},
-			"response": []
+			]
 		}
 	],
 	"event": [
