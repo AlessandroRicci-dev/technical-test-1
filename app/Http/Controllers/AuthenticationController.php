@@ -18,7 +18,7 @@ class AuthenticationController extends Controller
             return $this->unauthorizedResponse();
         }
 
-        /** @var \App\Models\User|\Laravel\Sanctum\HasApiTokens $user */
+        /** @var User $user */
         $user = Auth::user();
 
         return response()->json([

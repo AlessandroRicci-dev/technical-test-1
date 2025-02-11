@@ -19,7 +19,7 @@ class OrderService
      *
      * this is a search via meilisearch
      * 
-     * @param Request $request
+     * @param array $request
      * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
      */
     public function list(array $request): LengthAwarePaginator
