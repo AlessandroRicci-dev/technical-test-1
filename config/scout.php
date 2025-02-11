@@ -143,8 +143,8 @@ return [
         'key' => env('MEILISEARCH_KEY'),
         'index-settings' => [
             Order::class => [
-                'filterableAttributes' => ['user_id', 'name', 'description', 'created_at',],
-                'sortableAttributes' => ['created_at'],
+                'filterableAttributes' => ['user_id', 'name', 'description', 'created_at'],
+                'sortableAttributes' => ['user_id', 'name', 'description', 'created_at'],
             ],
         ],
     ],

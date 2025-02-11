@@ -25,7 +25,6 @@ class OrderStoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'user_id' => 'required|exists:users,id',
             'name' => 'required|string',
             'description' => 'required|string',
             'status' => 'required|in:DRAFT,PAID,SHIPPED,COMPLETED',

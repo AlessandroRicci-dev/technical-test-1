@@ -22,8 +22,15 @@ class OrderIndexRequest extends FormRequest
      */
     public function rules(): array
     {
-
-        return [];
+        return [
+            'query' => 'required|string',
+            'fromDate' => 'nullable|date',
+            'toDate' => [
+                'nullable',
+                'date',
+                'required_with:fromDate'
+            ],
+        ];
     }
 
     public function messages(): array
