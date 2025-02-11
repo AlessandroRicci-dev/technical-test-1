@@ -32,7 +32,7 @@ Ensures a consistent and portable development environment, simplifying dependenc
 
 ## Docs
 
-In the docs folder you will find some more detailed documentation
+In the docs folder you will find some more detailed documentation, you will also find a postman collection to play with :)
 
 ## Starting the project
 
