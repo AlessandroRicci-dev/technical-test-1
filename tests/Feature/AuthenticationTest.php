@@ -9,7 +9,7 @@ use App\Models\User;
 class AuthenticationTest extends TestCase
 {
 
-    public function test_auth_with_valid_credentials(): void
+    public function test_can_auth_with_valid_credentials(): void
     {
         $user = User::factory()->create([
             'password' => bcrypt($password = 'password'),
@@ -24,7 +24,7 @@ class AuthenticationTest extends TestCase
         $response->assertJsonStructure(['token']);
     }
 
-    public function test_auth_with_invalid_credentials(): void
+    public function test_cannot_auth_with_invalid_credentials(): void
     {
         $response = $this->postJson('/api/auth', [
             'email' => fake()->email(),
@@ -35,7 +35,7 @@ class AuthenticationTest extends TestCase
         $response->assertJsonStructure(['error', 'message']);
     }
 
-    public function test_auth_with_malformed_credentials(): void
+    public function test_cannot_auth_with_malformed_credentials(): void
     {
         $response = $this->postJson('/api/auth', [
             'email' => 'thisIsNotAnEmail',
