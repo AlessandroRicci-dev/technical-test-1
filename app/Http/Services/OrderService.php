@@ -3,13 +3,12 @@
 namespace App\Http\Services;
 
 use App\Models\Order;
-use App\Models\Product;
 use App\Models\OrderItem;
+use App\Models\Product;
 use Carbon\Carbon;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class OrderService
 {
@@ -20,7 +19,7 @@ class OrderService
      * this is a search via meilisearch
      * 
      * @param array $request
-     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
+     * @return \Illuminate\Pagination\LengthAwarePaginator
      */
     public function list(array $request): LengthAwarePaginator
     {
@@ -146,7 +145,7 @@ class OrderService
      * Delete an order and restore the stock of its associated products.
      *
      * @param string $id The order ID.
-     * @return \Illuminate\Http\JsonResponse
+     * @return bool
      */
     public function deleteOrder(string $id): bool
     {

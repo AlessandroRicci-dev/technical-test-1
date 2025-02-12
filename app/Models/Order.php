@@ -9,6 +9,25 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Builder;
 
+
+/**
+ * Class Order
+ *
+ * @property int $id
+ * @property int $user_id
+ * @property string $name
+ * @property string|null $description
+ * @property string $status
+ * @property string $created_at
+ * @property string|null $updated_at
+ * @property string $role
+ *
+ * @property-read User $user
+ * @property OrderItem $orderItems
+ * @method static Order find(int $id)
+ * @method static Order create(array $attributes)
+ * @method static Order where(string $column, string $operator = '=', mixed $value)
+ */
 class Order extends Model
 {
     use SoftDeletes, HasFactory, Searchable;
